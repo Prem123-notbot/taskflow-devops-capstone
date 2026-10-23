@@ -58,3 +58,5 @@ Set a strong unique `SESSION_SECRET` before sharing/deploying. Use HTTPS in prod
 
 ## Demo flow
 Register → create project → add tasks → change statuses → show dashboard progress → check health endpoint → run Jenkins tests/build → run container.
+
+Webhook test: 2026-10-23 16:55:25

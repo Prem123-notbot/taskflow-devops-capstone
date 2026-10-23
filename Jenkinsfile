@@ -38,13 +38,11 @@ pipeline {
                 sh '''
                     set -eu
 
-                    IMAGE="taskflow-devops-capstone:${BUILD_NUMBER}"
-                    PREVIOUS_IMAGE=$(docker inspect taskflow-app --format '{{.Config.Image}}')
+                    export COMPOSE_PROJECT_NAME=taskflow-devops-capstone
+                    export APP_VERSION="${BUILD_NUMBER}"
 
-                    echo "Previous image: $PREVIOUS_IMAGE"
-                    echo "Deploying image: $IMAGE"
-
-                    docker compose up -d --no-build --force-recreate
+                    echo "Deploying TaskFlow build ${BUILD_NUMBER}"
+                    docker compose -p taskflow-devops-capstone up -d --no-build --force-recreate
                 '''
             }
         }
@@ -52,10 +50,10 @@ pipeline {
         stage('Health check') {
             steps {
                 sh '''
-                    set +e
+                    set -eu
 
                     for i in $(seq 1 30); do
-                        if curl -fsS http://127.0.0.1:3000/api/health >/dev/null; then
+                        if curl -fsS http://127.0.0.1:3000/api/health; then
                             echo "TaskFlow health check passed."
                             exit 0
                         fi
@@ -74,7 +72,7 @@ pipeline {
             echo 'TaskFlow CI/CD pipeline completed successfully.'
         }
         failure {
-            echo 'Pipeline failed. Inspect the stage logs before retrying.'
+            echo 'Pipeline failed. Review the stage logs before retrying.'
         }
     }
 }

@@ -13,6 +13,15 @@ pipeline {
             }
         }
 
+	 stage('Initialize rollback state') {
+            steps {
+                sh '''
+                    rm -f .deploy_started .previous_image_tag
+                    echo "Rollback state initialized for this build."
+                '''
+            }
+        }
+
         stage('Install dependencies') {
             steps {
                 sh 'node --version'

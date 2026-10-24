@@ -80,8 +80,6 @@ pipeline {
         stage('Health check') {
             steps {
                 sh '''
-		echo "ROLLBACK TEST: intentionally failing health check"
-		exit 1
                     set -eu
 
                     for i in $(seq 1 30); do
